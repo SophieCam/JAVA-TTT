@@ -1,58 +1,47 @@
 package com.tts;
-
 import java.util.*;
-
 public class TicTacToe {
-
-    static ArrayList<Integer> playerPositions = new ArrayList<Integer>();
-    static ArrayList<Integer> computerPositions = new ArrayList<Integer>();
+    static ArrayList<Integer> playerPosition = new ArrayList<Integer>();
+    static ArrayList<Integer> computerPosition = new ArrayList<Integer>();
 
     public static void main(String[] args) {
-
         char[][] gameBoard = { {' ', '|', ' ', '|', ' '}, //index row 0, each element is column
                 {'*', '*', '*', '*', '*'},
                 {' ', '|', ' ', '|', ' '},
                 {'*', '*', '*', '*', '*'},
                 {' ', '|', ' ', '|', ' '}};
-
         printGameBoard(gameBoard);
-
         //looping game, so that computer is always listening and ready to go
         while (true) {
             Scanner scan = new Scanner(System.in);
             System.out.println("enter your placement (1 -9):");
-            int playerPosition = scan.nextInt();
-            while (playerPositions.contains(playerPosition) || computerPositions.contains(playerPositions)){
+            int playerPos = scan.nextInt();
+            while (playerPosition.contains(playerPos) || computerPosition.contains(playerPos)){
                 System.out.println("Position Taken! Enter a correct Positions");
-                playerPosition=scan.nextInt();
+                playerPos=scan.nextInt();
             }
-
-            placePiece(gameBoard, playerPosition, "player");
+            placePiece(gameBoard, playerPos, "player");
             String result= checkWinner();
-                if (result.length()>0){
-                    System.out.println(result);
-                    break;
-                }
-
-            Random rand = new Random();
-            int computerPosition = rand.nextInt(9) + 1;
-            while (playerPositions.contains(computerPosition) || computerPositions.contains(computerPosition)){
-                computerPosition = rand.nextInt(9) + 1;
-            }
-            placePiece(gameBoard, computerPosition, "computer");
-
-            printGameBoard(gameBoard);
-
-             result= checkWinner();
             if (result.length()>0){
-                System.out.println(result);
+                System.out.println("   " + result);
                 break;
             }
+            Random rand = new Random();
+            int computerPos = rand.nextInt(9) + 1;
+            while (playerPosition.contains(computerPos) || computerPosition.contains(computerPos)){
+                computerPos = rand.nextInt(9) + 1;
+            }
+            System.out.println(computerPos);
 
+            placePiece(gameBoard, computerPos, "computer");
+            printGameBoard(gameBoard);
+            result= checkWinner();
+            if (result.length()>0){
+                System.out.println("    " + result);
+                break;
+            }
         }
-
     }
-
     public static void printGameBoard(char [][] gameBoard) {
         for (char [] row : gameBoard) {
             for (char c: row) {
@@ -61,18 +50,15 @@ public class TicTacToe {
             System.out.println();
         }
     }
-
     public static void placePiece (char [] [] gameBoard, int position, String user) {
-
-        char symbol= 'X';
-        if(user.equals(" player")){
+        char symbol= ' ';
+        if(user.equals("player")){
             symbol = 'X';
-            playerPositions.add(position);
+            playerPosition.add(position);
         } else if (user.equals("computer")){
             symbol= 'O';
-            computerPositions.add(position);
+            computerPosition.add(position);
         }
-
         switch (position) {
             case 1:
 //                row, col
@@ -108,9 +94,8 @@ public class TicTacToe {
                 break;
         }
     }
-
     public static String checkWinner() {
-
+        boolean win = false;
         List topRow = Arrays.asList(1,2,3);
         List midRow = Arrays.asList(4,5,6);
         List botRow = Arrays.asList(7,8,9);
@@ -122,7 +107,7 @@ public class TicTacToe {
         //diagonal (bottom left to top right)
         List cross2 = Arrays.asList(7,5,3);
 
-        List <List> winningConditions = new ArrayList<List>();
+        List <List> winningConditions = new ArrayList<>();
         winningConditions.add(topRow);
         winningConditions.add(midRow);
         winningConditions.add(botRow);
@@ -131,17 +116,15 @@ public class TicTacToe {
         winningConditions.add(rightCol);
         winningConditions.add(cross1);
         winningConditions.add(cross2);
-
         for (List l : winningConditions) {
-            if (playerPositions.containsAll(l)) {
+            if (playerPosition.containsAll(l)) {
                 return "Congratulations you won!!";
-            } else if (computerPositions.contains(l)) {
-                return " Computer won, you lost :(";
-            }else if (playerPositions.size() + computerPositions.size() == 9) {
+            } else if (computerPosition.containsAll(l)) {
+                return " Computer won, Sorry you lost :(";
+            }else if (playerPosition.size() + computerPosition.size() > 9) {
                 return "No winner this round";
             }
         }
-
         return "";
     }
 }
